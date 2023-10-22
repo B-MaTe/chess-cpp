@@ -8,25 +8,34 @@
 #include <SFML/Graphics.hpp>
 #include "../texture/CustomTexture.hpp"
 #include "../piece/Piece.hpp"
+#include <cmath>
 
 using PieceSharedPtr = std::shared_ptr<Piece>;
 
 class Board: public CustomTexture {
 private:
+    std::vector<std::shared_ptr<sf::Shape>> availablePositionBackgrounds;
     PieceSharedPtr board[8][8];
+    PieceSharedPtr findPieceSharedPtrByPosition(sf::Vector2f position);
 public:
     explicit Board(std::string & path, sf::Vector2u screenSize, sf::Sprite &initSprite);
     void render(sf::RenderWindow& window) const;
     void loadPosition(std::array<std::array<char, 8>, 8> fen, std::array<sf::Sprite, 64>& pieceSprites);
-    void movePiece(PieceSharedPtr & piece, int row, int col);
-    PieceSharedPtr& getSquare(int row, int col) {
-        return board[row][col];
+    bool movePiece(PieceSharedPtr & piece, int row, int col);
+    bool movePiece(PieceSharedPtr & piece, PiecePosition position) {
+        return movePiece(piece, position.row, position.col);
     }
-    void setSquare(int row, int col, PieceSharedPtr& piece) {
-        board[row][col] = piece;
+    PieceSharedPtr& getSquare(PiecePosition position) {
+        return board[position.row][position.col];
     }
-    const PieceSharedPtr (&getBoard())[8][8] {
+    PiecePosition normalizePosition(int x, int y);
+    bool normalizePositionAndMovePiece(sf::Vector2f newPosition, sf::Vector2f initialPosition, sf::Vector2i mousePosition);
+    PieceSharedPtr (&getBoard())[8][8] {
         return board;
+    }
+    void colorSquares(const std::vector<PiecePosition>& positions);
+    void resetAvailablePositionBackgrounds() {
+        availablePositionBackgrounds.clear();
     }
 };
 

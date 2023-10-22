@@ -13,6 +13,7 @@ Piece::Piece(sf::Sprite &initSprite, char _name) : CustomTexture(getPath(_name),
 {
     position = {0,0};
     name = _name;
+    white = isupper(name);
 }
 
 

@@ -12,26 +12,50 @@ const std::string PIECE_PATH = "../static/img/pieces/";
 struct PiecePosition {
     int row = 0;
     int col = 0;
+
+    bool operator==(const PiecePosition& other) const {
+        return (row == other.row) && (col == other.col);
+    }
+
+    bool operator!=(const PiecePosition& other) const {
+        return !(*this == other);
+    }
 };
 
 class Piece : public CustomTexture {
 private:
     PiecePosition position;
     char name;
+    bool active = false;
+    bool moved = false;
+    bool white;
 public:
     explicit Piece(sf::Sprite &initSprite, char name);
     PiecePosition getPosition() const {
         return position;
     }
-    void setPosition(int row, int col) {
-        position.row = std::min(std::max(row, 0), 7);
-        position.col = std::min(std::max(col, 0), 7);
-    }
     void setPosition(PiecePosition piecePosition) {
         position = piecePosition;
     }
-    void movePosition(int row, int col) {
-        setPosition(position.row + row, position.col + col);
+    char getName() const {
+        return name;
+    }
+    bool isActive() const {
+        return active;
+    }
+    void setActive(bool isActive) {
+        active = isActive;
+    }
+    bool isMoved() const
+    {
+        return moved;
+    }
+    void setMoved(bool _moved)
+    {
+        moved = _moved;
+    }
+    bool isWhite() const {
+        return white;
     }
 };
 

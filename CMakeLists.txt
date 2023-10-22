@@ -14,6 +14,8 @@ add_executable(chess main.cpp
         piece/Piece.hpp
         helper/FenHelper.cpp
         helper/FenHelper.hpp
+        game/Game.cpp
+        game/Game.hpp
 )
 
 target_link_libraries(${PROJECT_NAME} sfml-graphics sfml-audio)
