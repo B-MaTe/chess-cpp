@@ -61,7 +61,7 @@ int main()
                 {
                     sf::Vector2<int> mousePos = sf::Mouse::getPosition(window);
                     selectedPiece = clickedAtPiece(mousePos, board);
-                    if (selectedPiece != PieceSharedPtr(nullptr)) {
+                    if (selectedPiece != PieceSharedPtr(nullptr) && game.pieceTurn(selectedPiece)) {
                         board.colorSquares(game.getValidMovesForPiece(selectedPiece));
                         selectedPiece->setActive(true);
                         initialPosition = selectedPiece->getSprite().getPosition();
@@ -75,11 +75,11 @@ int main()
                 if (event.mouseButton.button == sf::Mouse::Left && isDragging && selectedPiece != nullptr) {
                     sf::Vector2<int> mousePos = sf::Mouse::getPosition(window);
                     selectedPiece->setActive(false);
-
+                    PiecePosition normalizedNewPosition = board.normalizePosition(mousePos.x, mousePos.y);
                     if (!board.getSprite().getGlobalBounds().contains(mousePos.x, mousePos.y)
-                        || !game.validMove(selectedPiece, board.normalizePosition(mousePos.x, mousePos.y))
+                        || !game.validMove(selectedPiece, normalizedNewPosition, true)
                         || !board.normalizePositionAndMovePiece(selectedPiece->getSprite().getPosition(), initialPosition, mousePos)) {
-                            selectedPiece->getSprite().setPosition(initialPosition);
+                        selectedPiece->getSprite().setPosition(initialPosition);
                     } else {
                         game.afterMove();
                     }

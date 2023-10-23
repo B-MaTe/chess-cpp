@@ -19,6 +19,7 @@ private:
     PieceSharedPtr findPieceSharedPtrByPosition(sf::Vector2f position);
 public:
     explicit Board(std::string & path, sf::Vector2u screenSize, sf::Sprite &initSprite);
+    void static drawBoard(PieceSharedPtr (&boardToPrint)[8][8]);
     void render(sf::RenderWindow& window) const;
     void loadPosition(std::array<std::array<char, 8>, 8> fen, std::array<sf::Sprite, 64>& pieceSprites);
     bool movePiece(PieceSharedPtr & piece, int row, int col);

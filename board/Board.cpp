@@ -15,11 +15,29 @@ Board::Board(std::string& path, sf::Vector2u screenSize, sf::Sprite &initSprite)
     float spriteCenterY = (getSprite().getLocalBounds().height * scale) / 2.0;
     getSprite().setPosition((screenSize.x / 2) - spriteCenterX, (screenSize.y / 2) - spriteCenterY);
 
-    for (auto & i : board) {
-        for (int j = 0; j < 8; ++j) {
-            i[j] = PieceSharedPtr(nullptr);
+    for (auto & row : board) {
+        for (auto & piece : row) {
+            piece = PieceSharedPtr(nullptr);
         }
     }
+}
+
+
+void Board::drawBoard(PieceSharedPtr (&boardToPrint)[8][8])
+{
+    for (auto & i : boardToPrint)
+    {
+        for (auto & j : i)
+        {
+            std::string pieceStr = " ";
+            if (j != PieceSharedPtr(nullptr)) {
+                pieceStr = j->getName();
+            }
+            std::cout << pieceStr + " ";
+        }
+        std::cout << std::endl;
+    }
+    std::cout << "---------------------------------------" << std::endl;
 }
 
 void Board::render(sf::RenderWindow &window) const
@@ -94,19 +112,7 @@ bool Board::movePiece(PieceSharedPtr & piece, int row, int col)
     float xPos = boardBounds.left + (col * cellSize) + cellSize / 6;
     float yPos = boardBounds.top + (row * cellSize) + cellSize / 6;
     piece->getSprite().setPosition(xPos, yPos);
-    for (auto & i : board)
-    {
-        for (auto & j : i)
-        {
-            std::string pieceStr = " ";
-            if (j != PieceSharedPtr(nullptr)) {
-                pieceStr = j->getName();
-            }
-            std::cout << pieceStr + " ";
-        }
-        std::cout << std::endl;
-    }
-    std::cout << "---------------------------------------" << std::endl;
+    //drawBoard(getBoard());
 
     return true;
 }

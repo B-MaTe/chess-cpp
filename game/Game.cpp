@@ -39,9 +39,9 @@ bool Game::pieceTurn(PieceSharedPtr &piece) const
     return piece->isWhite() ? isWhiteTurn() : !isWhiteTurn();
 }
 
-bool Game::validMove(PieceSharedPtr & piece, PiecePosition newPosition) const
+bool Game::validMove(PieceSharedPtr & piece, PiecePosition newPosition, bool lookForCheck) const
 {
-    bool isValid = pieceTurn(piece) && piece->getPosition() != newPosition;
+    bool isValid = piece->getPosition() != newPosition;
 
     if (isValid) {
         switch(piece->getName()) {
@@ -71,6 +71,21 @@ bool Game::validMove(PieceSharedPtr & piece, PiecePosition newPosition) const
                 break;
             default:
                 isValid = false;
+        }
+
+        // check validation with simulating move
+        if (isValid && lookForCheck) {
+            PieceSharedPtr capturedPiece = getSquare(newPosition);
+            getSquare(newPosition).reset();
+            getSquare(newPosition) = piece;
+            PiecePosition oldPosition = piece->getPosition();
+            piece->setPosition(newPosition);
+            getSquare(oldPosition).reset();
+            isValid = !isCheckPosition(piece->isWhite());
+
+            getSquare(newPosition) = capturedPiece;
+            piece->setPosition(oldPosition);
+            getSquare(piece->getPosition()) = piece;
         }
     }
 
@@ -266,7 +281,20 @@ std::vector<PiecePosition> Game::getValidMovesForPiece(PieceSharedPtr &piece) co
             for (int j = 0; j < 8; j++) {
                 PiecePosition newPosition = {i, j};
                 if (piece->getPosition() != newPosition && (this->*validPositionFunc)(piece, newPosition)) {
-                    validPositions.push_back(newPosition);
+                    PieceSharedPtr capturedPiece = getSquare(newPosition);
+                    getSquare(newPosition).reset();
+                    getSquare(newPosition) = piece;
+                    PiecePosition oldPosition = piece->getPosition();
+                    piece->setPosition(newPosition);
+                    getSquare(oldPosition).reset();
+                    if (!isCheckPosition(piece->isWhite())) {
+                        validPositions.push_back(newPosition);
+                    }
+
+                    getSquare(newPosition) = capturedPiece;
+                    piece->setPosition(oldPosition);
+                    getSquare(piece->getPosition()) = piece;
+
                 }
             }
         }
@@ -275,5 +303,39 @@ std::vector<PiecePosition> Game::getValidMovesForPiece(PieceSharedPtr &piece) co
     return validPositions;
 }
 
+bool Game::isCheckPosition(bool whiteKing) const
+{
+    PieceSharedPtr* king = getPieceOnTable(whiteKing ? 'K' : 'k');
 
+    if (king == nullptr) {
+        exit(EXIT_FAILURE);
+    }
 
+    for (auto & row : board)
+    {
+        for (auto & piece: row)
+        {
+            if (!nullPtrPiece(piece) && !sameColourPieces(*king, piece)) {
+                if (validMove(piece, king->get()->getPosition(), false)) {
+                    return true;
+                }
+            }
+        }
+    }
+
+    return false;
+}
+
+PieceSharedPtr * Game::getPieceOnTable(char name) const
+{
+    for (auto & i : board) {
+        for (auto & j : i) {
+            PieceSharedPtr* piece = &j;
+            if (!nullPtrPiece(*piece) && piece->get()->getName() == name) {
+                return piece;
+            }
+        }
+    }
+
+    return nullptr;
+}

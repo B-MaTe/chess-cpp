@@ -16,21 +16,24 @@ private:
     bool whiteAtBottom = true;
     PieceSharedPtr (&board)[8][8];
 public:
+
     bool static sameColourPieces(PieceSharedPtr & piece1, PieceSharedPtr & piece2);
     bool static nullPtrPiece(PieceSharedPtr & piece);
     static bool onTable(int row, int col);
     static bool onTable(PiecePosition position)  {
         return onTable(position.row, position.col);
     }
+    [[nodiscard]] PieceSharedPtr * getPieceOnTable(char name) const;
+    [[nodiscard]] bool isCheckPosition(bool whiteKing) const;
     bool pieceTurn(PieceSharedPtr & piece) const;
     Game(PieceSharedPtr (&board)[8][8], int move, bool whiteTurn, bool whiteAtBottom);
     void increaseMove() {
         move++;
     }
-    int getMove() const {
+    [[nodiscard]] int getMove() const {
         return move;
     }
-    bool isWhiteAtBottom() const {
+    [[nodiscard]] bool isWhiteAtBottom() const {
         return whiteAtBottom;
     }
     void changeTurn() {
@@ -40,7 +43,7 @@ public:
         return whiteTurn;
     }
     void afterMove();
-    bool validMove(PieceSharedPtr & piece, PiecePosition newPosition) const;
+    bool validMove(PieceSharedPtr & piece, PiecePosition newPosition, bool lookForCheck) const;
     bool isValidBishopMove(PieceSharedPtr & piece, PiecePosition newPosition) const;
     bool isValidRockMove(PieceSharedPtr & piece, PiecePosition newPosition) const;
     bool isValidQueenMove(PieceSharedPtr & piece, PiecePosition newPosition) const;
