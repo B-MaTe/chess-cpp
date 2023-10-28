@@ -26,11 +26,12 @@ class Piece : public CustomTexture {
 private:
     PiecePosition position;
     char name;
-    bool active = false;
+    bool currentlyMoving = false;
     bool moved = false;
     bool white;
 public:
     explicit Piece(sf::Sprite &initSprite, char name);
+    bool isAtStartingSquare(bool whiteAtBottom);
     PiecePosition getPosition() const {
         return position;
     }
@@ -40,11 +41,11 @@ public:
     char getName() const {
         return name;
     }
-    bool isActive() const {
-        return active;
+    bool isCurrentlyMoving() const {
+        return currentlyMoving;
     }
-    void setActive(bool isActive) {
-        active = isActive;
+    void setCurrentlyMoving(bool isCurrentlyMoving) {
+        currentlyMoving = isCurrentlyMoving;
     }
     bool isMoved() const
     {

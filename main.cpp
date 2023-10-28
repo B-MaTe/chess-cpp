@@ -28,9 +28,9 @@ int main()
     sf::Sprite boardSprite;
     Board board = Board(boardPath, window.getSize(), boardSprite);
     Game game = Game(board.getBoard(), 0, true,  true);
-    std::array<std::array<char, 8>, 8> startPosition = FenHelper::loadFen("1kr5/1pr4p/1b3qp1/5p2/2N5/1P1Q1P2/P1P1N1PP/1K1R4");
+    std::array<std::array<char, 8>, 8> startPosition = FenHelper::loadFen("1k6/8/8/8/8/8/4q3/1K6");
     std::array<sf::Sprite, 64> pieceSprites;
-    board.loadPosition(startPosition, pieceSprites);
+    board.loadPosition(startPosition, pieceSprites, game.isWhiteAtBottom());
     bool isDragging = false;
     sf::Vector2f offset;
     sf::Vector2f initialPosition;
@@ -63,7 +63,7 @@ int main()
                     selectedPiece = clickedAtPiece(mousePos, board);
                     if (selectedPiece != PieceSharedPtr(nullptr) && game.pieceTurn(selectedPiece)) {
                         board.colorSquares(game.getValidMovesForPiece(selectedPiece));
-                        selectedPiece->setActive(true);
+                        selectedPiece->setCurrentlyMoving(true);
                         initialPosition = selectedPiece->getSprite().getPosition();
                         isDragging = true;
                         offset = initialPosition - static_cast<sf::Vector2f>(mousePos);
@@ -71,17 +71,28 @@ int main()
 
                 }
             } else if (event.type == sf::Event::MouseButtonReleased) {
-                board.resetAvailablePositionBackgrounds();
                 if (event.mouseButton.button == sf::Mouse::Left && isDragging && selectedPiece != nullptr) {
+                    board.resetAvailablePositionBackgrounds();
                     sf::Vector2<int> mousePos = sf::Mouse::getPosition(window);
-                    selectedPiece->setActive(false);
+                    selectedPiece->setCurrentlyMoving(false);
                     PiecePosition normalizedNewPosition = board.normalizePosition(mousePos.x, mousePos.y);
                     if (!board.getSprite().getGlobalBounds().contains(mousePos.x, mousePos.y)
                         || !game.validMove(selectedPiece, normalizedNewPosition, true)
-                        || !board.normalizePositionAndMovePiece(selectedPiece->getSprite().getPosition(), initialPosition, mousePos)) {
+                        || !board.normalizePositionAndMovePiece(selectedPiece->getSprite().getPosition(), mousePos)) {
                         selectedPiece->getSprite().setPosition(initialPosition);
                     } else {
                         game.afterMove();
+                        switch(game.getStatusOfPosition(game.isWhiteTurn())) {
+                            case CHECKMATE:
+                                std::cout << "checkmate!" << std::endl << std::flush;
+                                break;
+                            case STALEMATE:
+                                std::cout << "stalemate!" << std::endl << std::flush;
+                                break;
+                            case ACTIVE:
+                            default:
+                                break;
+                        }
                     }
 
                     isDragging = false;

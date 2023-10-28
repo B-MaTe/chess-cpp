@@ -18,14 +18,13 @@ bool Game::sameColourPieces(PieceSharedPtr & piece1, PieceSharedPtr & piece2)
 }
 
 
-bool Game::nullPtrPiece(PieceSharedPtr & piece)
+bool Game::nullPtrPiece(const PieceSharedPtr & piece)
 {
     return piece == nullptr || piece == PieceSharedPtr(nullptr);
 }
 
 Game::Game(PieceSharedPtr (&_board)[8][8], int _move, bool _whiteTurn, bool _whiteAtBottom)
         : board(_board), move(_move), whiteTurn(_whiteTurn), whiteAtBottom(_whiteAtBottom) {
-    
 }
 
 void Game::afterMove()
@@ -133,6 +132,7 @@ bool Game::isValidBishopMove(PieceSharedPtr & piece, PiecePosition newPosition) 
                 if (sameColourPieces(piece, getSquare(positionToCheck))) {
                     break;
                 }
+
                 foundNewPosition = newPosition == positionToCheck;
                 break;
             }
@@ -241,10 +241,17 @@ bool Game::isValidPawnMove(PieceSharedPtr &piece, PiecePosition newPosition) con
 
 std::vector<PiecePosition> Game::getValidMovesForPiece(PieceSharedPtr &piece) const
 {
+
+
     // This method is really inefficient, but because it is only used for the gui
     // I left it like this as 'it does its job'
 
     std::vector<PiecePosition> validPositions;
+
+    if (nullPtrPiece(piece)) {
+        return validPositions;
+    }
+
     bool (Game::*validPositionFunc)(PieceSharedPtr &, PiecePosition) const = nullptr;
 
     switch (piece->getName()) {
@@ -281,20 +288,22 @@ std::vector<PiecePosition> Game::getValidMovesForPiece(PieceSharedPtr &piece) co
             for (int j = 0; j < 8; j++) {
                 PiecePosition newPosition = {i, j};
                 if (piece->getPosition() != newPosition && (this->*validPositionFunc)(piece, newPosition)) {
-                    PieceSharedPtr capturedPiece = getSquare(newPosition);
-                    getSquare(newPosition).reset();
-                    getSquare(newPosition) = piece;
-                    PiecePosition oldPosition = piece->getPosition();
-                    piece->setPosition(newPosition);
-                    getSquare(oldPosition).reset();
-                    if (!isCheckPosition(piece->isWhite())) {
+                    auto movingPiece = std::make_shared<PieceSharedPtr>(getSquare(piece->getPosition()));
+                    auto capturedPiece = std::make_shared<PieceSharedPtr>(getSquare(newPosition));
+
+                    PiecePosition oldPosition = movingPiece->get()->getPosition();
+                    movingPiece->get()->setPosition(newPosition);
+
+                    getSquare(newPosition) = *movingPiece;
+                    getSquare(oldPosition) = nullptr;
+
+                    if (!isCheckPosition(movingPiece->get()->isWhite())) {
                         validPositions.push_back(newPosition);
                     }
 
-                    getSquare(newPosition) = capturedPiece;
-                    piece->setPosition(oldPosition);
-                    getSquare(piece->getPosition()) = piece;
-
+                    movingPiece->get()->setPosition(oldPosition);
+                    getSquare(newPosition) = *capturedPiece;
+                    getSquare(oldPosition) = *movingPiece;
                 }
             }
         }
@@ -324,6 +333,23 @@ bool Game::isCheckPosition(bool whiteKing) const
     }
 
     return false;
+}
+
+Status Game::getStatusOfPosition(bool whiteKing) const
+{
+    for (auto & row : board)
+    {
+        for (auto & piece: row)
+        {
+            if (!nullPtrPiece(piece)
+                && (whiteKing ? piece->isWhite() : !piece->isWhite())
+                && !getValidMovesForPiece(piece).empty()) {
+                return ACTIVE;
+            }
+        }
+    }
+
+    return isCheckPosition(whiteKing) ? CHECKMATE : STALEMATE;
 }
 
 PieceSharedPtr * Game::getPieceOnTable(char name) const

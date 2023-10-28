@@ -7,6 +7,7 @@
 
 
 #include "../board/Board.hpp"
+#include "../enums/Status.cpp"
 
 class Game
 {
@@ -18,13 +19,11 @@ private:
 public:
 
     bool static sameColourPieces(PieceSharedPtr & piece1, PieceSharedPtr & piece2);
-    bool static nullPtrPiece(PieceSharedPtr & piece);
+    bool static nullPtrPiece(const PieceSharedPtr & piece);
     static bool onTable(int row, int col);
     static bool onTable(PiecePosition position)  {
         return onTable(position.row, position.col);
     }
-    [[nodiscard]] PieceSharedPtr * getPieceOnTable(char name) const;
-    [[nodiscard]] bool isCheckPosition(bool whiteKing) const;
     bool pieceTurn(PieceSharedPtr & piece) const;
     Game(PieceSharedPtr (&board)[8][8], int move, bool whiteTurn, bool whiteAtBottom);
     void increaseMove() {
@@ -42,6 +41,9 @@ public:
     [[nodiscard]] bool isWhiteTurn() const {
         return whiteTurn;
     }
+    [[nodiscard]] PieceSharedPtr * getPieceOnTable(char name) const;
+    [[nodiscard]] bool isCheckPosition(bool whiteKing) const;
+    [[nodiscard]] Status getStatusOfPosition(bool whiteKing) const;
     void afterMove();
     bool validMove(PieceSharedPtr & piece, PiecePosition newPosition, bool lookForCheck) const;
     bool isValidBishopMove(PieceSharedPtr & piece, PiecePosition newPosition) const;
@@ -56,7 +58,7 @@ public:
         return board[position.row][position.col];
     }
     [[nodiscard]] bool emptyPosition(PiecePosition position) const {
-        return board[position.row][position.col] == PieceSharedPtr(nullptr);
+        return nullPtrPiece(board[position.row][position.col]);
     }
 };
 

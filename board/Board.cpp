@@ -55,7 +55,7 @@ void Board::render(sf::RenderWindow &window) const
     for (const auto & row : board) {
         for (const auto & piece : row) {
             if (piece != PieceSharedPtr(nullptr)) {
-                if (piece->isActive()) {
+                if (piece->isCurrentlyMoving()) {
                     activePiece = piece;
                 } else {
                     window.draw(piece->getSprite());
@@ -69,7 +69,7 @@ void Board::render(sf::RenderWindow &window) const
     }
 }
 
-void Board::loadPosition(std::array<std::array<char, 8>, 8> fen, std::array<sf::Sprite, 64>& pieceSprites)
+void Board::loadPosition(std::array<std::array<char, 8>, 8> fen, std::array<sf::Sprite, 64>& pieceSprites, bool whiteAtBottom)
 {
     for (int i = 0; i < 64; i++)
     {
@@ -84,8 +84,9 @@ void Board::loadPosition(std::array<std::array<char, 8>, 8> fen, std::array<sf::
             if (std::isalpha(fen[i][j])) {
                 sf::Sprite& pieceSprite = pieceSprites[pieceCounter];
                 PieceSharedPtr piece = std::make_shared<Piece>(pieceSprite, fen[i][j]);
+                piece->setPosition({i, j});
                 pieceSprite.setScale(pieceSize / piece->getTexture().getSize().x, pieceSize / piece->getTexture().getSize().y);
-                movePiece(piece, i, j);
+                movePiece(piece, i, j, !piece->isAtStartingSquare(whiteAtBottom));
                 pieceSprite = piece->getSprite();
                 pieceCounter++;
             }
@@ -93,7 +94,7 @@ void Board::loadPosition(std::array<std::array<char, 8>, 8> fen, std::array<sf::
     }
 }
 
-bool Board::movePiece(PieceSharedPtr & piece, int row, int col)
+bool Board::movePiece(PieceSharedPtr & piece, int row, int col, bool countsAsMove)
 {
     PieceSharedPtr & newPosPiece = board[row][col];
     const sf::FloatRect boardBounds = getSprite().getGlobalBounds();
@@ -104,7 +105,7 @@ bool Board::movePiece(PieceSharedPtr & piece, int row, int col)
     newPosPiece.reset();
 
     piece->setPosition({row, col});
-    if (!piece->isMoved()) {
+    if (countsAsMove && !piece->isMoved()) {
         piece->setMoved(true);
     }
 
@@ -112,16 +113,16 @@ bool Board::movePiece(PieceSharedPtr & piece, int row, int col)
     float xPos = boardBounds.left + (col * cellSize) + cellSize / 6;
     float yPos = boardBounds.top + (row * cellSize) + cellSize / 6;
     piece->getSprite().setPosition(xPos, yPos);
-    //drawBoard(getBoard());
+    drawBoard(getBoard());
 
     return true;
 }
 
-bool Board::normalizePositionAndMovePiece(sf::Vector2f newPosition, sf::Vector2f initialPosition, sf::Vector2i  mousePosition)
+bool Board::normalizePositionAndMovePiece(sf::Vector2f newPosition, sf::Vector2i  mousePosition)
 {
     PieceSharedPtr pieceSharedPtr = findPieceSharedPtrByPosition(newPosition);
     PiecePosition normalizedPosition = normalizePosition(mousePosition.x, mousePosition.y);
-    return movePiece(pieceSharedPtr, normalizedPosition);
+    return movePiece(pieceSharedPtr, normalizedPosition, true);
 }
 
 

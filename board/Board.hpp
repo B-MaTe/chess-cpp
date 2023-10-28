@@ -21,16 +21,16 @@ public:
     explicit Board(std::string & path, sf::Vector2u screenSize, sf::Sprite &initSprite);
     void static drawBoard(PieceSharedPtr (&boardToPrint)[8][8]);
     void render(sf::RenderWindow& window) const;
-    void loadPosition(std::array<std::array<char, 8>, 8> fen, std::array<sf::Sprite, 64>& pieceSprites);
-    bool movePiece(PieceSharedPtr & piece, int row, int col);
-    bool movePiece(PieceSharedPtr & piece, PiecePosition position) {
-        return movePiece(piece, position.row, position.col);
+    void loadPosition(std::array<std::array<char, 8>, 8> fen, std::array<sf::Sprite, 64>& pieceSprites, bool whiteAtBottom);
+    bool movePiece(PieceSharedPtr & piece, int row, int col, bool countsAsMove);
+    bool movePiece(PieceSharedPtr & piece, PiecePosition position, bool countsAsMove) {
+        return movePiece(piece, position.row, position.col, countsAsMove);
     }
     PieceSharedPtr& getSquare(PiecePosition position) {
         return board[position.row][position.col];
     }
     PiecePosition normalizePosition(int x, int y);
-    bool normalizePositionAndMovePiece(sf::Vector2f newPosition, sf::Vector2f initialPosition, sf::Vector2i mousePosition);
+    bool normalizePositionAndMovePiece(sf::Vector2f newPosition, sf::Vector2i mousePosition);
     PieceSharedPtr (&getBoard())[8][8] {
         return board;
     }
