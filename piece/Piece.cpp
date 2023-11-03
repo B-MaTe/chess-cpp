@@ -4,7 +4,7 @@
 
 #include "Piece.hpp"
 
-std::string static getPath(char _name) {
+std::string Piece::getPath(char _name) {
 
     return PIECE_PATH + std::string(1, _name) + ".png";
 }

@@ -54,7 +54,7 @@ bool Game::validMove(PieceSharedPtr & piece, PiecePosition newPosition, bool loo
                 break;
             case 'r':
             case 'R':
-                isValid = isValidRockMove(piece, newPosition);
+                isValid = isValidRookMove(piece, newPosition);
                 break;
             case 'b':
             case 'B':
@@ -147,7 +147,7 @@ bool Game::isValidBishopMove(PieceSharedPtr & piece, PiecePosition newPosition) 
     return isValid && foundNewPosition;
 }
 
-bool Game::isValidRockMove(PieceSharedPtr & piece, PiecePosition newPosition) const
+bool Game::isValidRookMove(PieceSharedPtr & piece, PiecePosition newPosition) const
 {
     const PiecePosition oldPosition = piece->getPosition();
     int rowMultiplier = 0;
@@ -191,7 +191,7 @@ bool Game::isValidRockMove(PieceSharedPtr & piece, PiecePosition newPosition) co
 
 bool Game::isValidQueenMove(PieceSharedPtr &piece, PiecePosition newPosition) const
 {
-    return isValidBishopMove(piece, newPosition) || isValidRockMove(piece, newPosition);
+    return isValidBishopMove(piece, newPosition) || isValidRookMove(piece, newPosition);
 }
 
 bool Game::isValidKnightMove(PieceSharedPtr &piece, PiecePosition newPosition) const
@@ -265,7 +265,7 @@ std::vector<PiecePosition> Game::getValidMovesForPiece(PieceSharedPtr &piece) co
             break;
         case 'r':
         case 'R':
-            validPositionFunc = &Game::isValidRockMove;
+            validPositionFunc = &Game::isValidRookMove;
             break;
         case 'b':
         case 'B':

@@ -17,6 +17,8 @@ add_executable(chess main.cpp
         game/Game.cpp
         game/Game.hpp
         enums/Status.cpp
+        prompt/PiecePromotionPrompt.cpp
+        prompt/PiecePromotionPrompt.hpp
 )
 
 target_link_libraries(${PROJECT_NAME} sfml-graphics sfml-audio)

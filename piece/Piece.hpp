@@ -30,6 +30,7 @@ private:
     bool moved = false;
     bool white;
 public:
+    static std::string getPath(char _name);
     explicit Piece(sf::Sprite &initSprite, char name);
     bool isAtStartingSquare(bool whiteAtBottom);
     PiecePosition getPosition() const {
@@ -40,6 +41,9 @@ public:
     }
     char getName() const {
         return name;
+    }
+    void setName(char _name) {
+        name = _name;
     }
     bool isCurrentlyMoving() const {
         return currentlyMoving;

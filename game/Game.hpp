@@ -47,7 +47,7 @@ public:
     void afterMove();
     bool validMove(PieceSharedPtr & piece, PiecePosition newPosition, bool lookForCheck) const;
     bool isValidBishopMove(PieceSharedPtr & piece, PiecePosition newPosition) const;
-    bool isValidRockMove(PieceSharedPtr & piece, PiecePosition newPosition) const;
+    bool isValidRookMove(PieceSharedPtr & piece, PiecePosition newPosition) const;
     bool isValidQueenMove(PieceSharedPtr & piece, PiecePosition newPosition) const;
     bool isValidKnightMove(PieceSharedPtr & piece, PiecePosition newPosition) const;
     bool isValidKingMove(PieceSharedPtr & piece, PiecePosition newPosition) const;
