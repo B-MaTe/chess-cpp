@@ -34,6 +34,10 @@ Board::~Board()
     for (const auto &item: promotionPieceSprites) {
         delete item;
     }
+
+    if (piecePromotionPrompt != nullptr) {
+        delete piecePromotionPrompt;
+    }
 }
 
 
@@ -54,7 +58,7 @@ void Board::drawBoard(PieceSharedPtr (&boardToPrint)[8][8])
     std::cout << "---------------------------------------" << std::endl;
 }
 
-void Board::render(sf::RenderWindow &window)
+void Board::render(sf::RenderWindow &window, sf::Event& event)
 {
     window.draw(getSprite());
 
@@ -85,7 +89,7 @@ void Board::render(sf::RenderWindow &window)
     // check for promotion
     if (piecePromotionPrompt != nullptr) {
         if (piecePromotionPrompt->getClickedPiece() == '-') {
-            piecePromotionPrompt->showPrompt(window);
+            piecePromotionPrompt->showPrompt(window, event);
         } else {
             promotePawn(getSquare(piecePromotionPrompt->getPromotingPawnPosition()));
             setActive(true);

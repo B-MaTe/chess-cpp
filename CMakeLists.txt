@@ -1,11 +1,27 @@
 cmake_minimum_required(VERSION 3.26)
 project(chess)
 
+if(WIN32)
+    # For Windows
+    set(SFML_DIR ${CMAKE_CURRENT_SOURCE_DIR}/lib/SFML_WIN)
+elseif(UNIX)
+    # For Linux
+    set(SFML_DIR ${CMAKE_CURRENT_SOURCE_DIR}/lib/SFML_UNIX)
+endif()
 
-find_package(SFML 2.5.1 COMPONENTS graphics audio REQUIRED)
+include_directories(
+        ${SFML_DIR}/include
+)
+
+link_directories(${SFML_DIR}/lib)
+
+set(SFML_STATIC_LIBRARIES TRUE)
+add_compile_definitions(SFML_STATIC)
 
 set(CMAKE_CXX_STANDARD 20)
-add_executable(chess main.cpp
+
+set(SOURCES
+        main.cpp
         texture/CustomTexture.cpp
         texture/CustomTexture.hpp
         board/Board.cpp
@@ -19,6 +35,9 @@ add_executable(chess main.cpp
         enums/Status.cpp
         prompt/PiecePromotionPrompt.cpp
         prompt/PiecePromotionPrompt.hpp
+        globals.hpp
 )
 
-target_link_libraries(${PROJECT_NAME} sfml-graphics sfml-audio)
+add_executable(chess ${SOURCES})
+
+target_link_libraries(chess PRIVATE sfml-graphics sfml-window sfml-system)

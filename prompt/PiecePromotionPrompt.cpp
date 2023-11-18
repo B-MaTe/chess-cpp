@@ -15,31 +15,28 @@ PiecePromotionPrompt::PiecePromotionPrompt(bool white, PiecePosition promotingPo
         )
     )
 {
-    promoteOptions.knightSprite.setScale(0.5, 0.5);
-    promoteOptions.bishopSprite.setScale(0.5, 0.5);
-    promoteOptions.rookSprite.setScale(0.5, 0.5);
-    promoteOptions.queenSprite.setScale(0.5, 0.5);
+    promoteOptions.knightSprite.setScale(0.25, 0.25);
+    promoteOptions.bishopSprite.setScale(0.25, 0.25);
+    promoteOptions.rookSprite.setScale(0.25, 0.25);
+    promoteOptions.queenSprite.setScale(0.25, 0.25);
 
     promoteOptions.knightSprite.setPosition(10, 100);
-    promoteOptions.bishopSprite.setPosition(160, 100);
-    promoteOptions.rookSprite.setPosition(320, 100);
-    promoteOptions.queenSprite.setPosition(460, 100);
+    promoteOptions.bishopSprite.setPosition(80, 100);
+    promoteOptions.rookSprite.setPosition(150, 100);
+    promoteOptions.queenSprite.setPosition(220, 100);
 
 }
 
-void PiecePromotionPrompt::showPrompt(sf::RenderWindow &window)
+void PiecePromotionPrompt::showPrompt(sf::RenderWindow &window, sf::Event& event)
 {
-    detectClickedSprite(window);
+    detectClickedSprite(window, event);
     window.draw(promoteOptions.knightSprite);
     window.draw(promoteOptions.bishopSprite);
     window.draw(promoteOptions.rookSprite);
     window.draw(promoteOptions.queenSprite);
 }
 
-void PiecePromotionPrompt::detectClickedSprite(sf::RenderWindow& window) {
-    sf::Event event{};
-    window.pollEvent(event);
-
+void PiecePromotionPrompt::detectClickedSprite(sf::RenderWindow& window, sf::Event& event) {
     if (event.type == sf::Event::MouseButtonPressed) {
         sf::Vector2f mousePos = window.mapPixelToCoords(sf::Vector2i(event.mouseButton.x, event.mouseButton.y));
         if (promoteOptions.queenSprite.getGlobalBounds().contains(mousePos)) {

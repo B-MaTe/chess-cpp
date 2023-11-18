@@ -27,7 +27,7 @@ public:
     explicit Board(std::string & path, sf::Vector2u screenSize, sf::Sprite &initSprite);
     ~Board();
     void static drawBoard(PieceSharedPtr (&boardToPrint)[8][8]);
-    void render(sf::RenderWindow& window);
+    void render(sf::RenderWindow& window, sf::Event& event);
     void loadPosition(std::array<std::array<char, 8>, 8> fen, std::array<sf::Sprite, 64>& pieceSprites, bool whiteAtBottom, sf::RenderWindow &window);
     bool movePiece(PieceSharedPtr & piece, int row, int col, bool countsAsMove, bool whiteAtBottom, sf::RenderWindow &window);
     bool movePiece(PieceSharedPtr & piece, PiecePosition position, bool countsAsMove, bool whiteAtBottom, sf::RenderWindow &window) {

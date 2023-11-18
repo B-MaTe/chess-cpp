@@ -6,21 +6,10 @@
 #define CHESS_PIECE_HPP
 #pragma once
 #include "../texture/CustomTexture.hpp"
+#include "../globals.hpp"
 
 const std::string PIECE_PATH = "../static/img/pieces/";
 
-struct PiecePosition {
-    int row = 0;
-    int col = 0;
-
-    bool operator==(const PiecePosition& other) const {
-        return (row == other.row) && (col == other.col);
-    }
-
-    bool operator!=(const PiecePosition& other) const {
-        return !(*this == other);
-    }
-};
 
 class Piece : public CustomTexture {
 private:

@@ -22,13 +22,13 @@ private:
     PromoteOptions promoteOptions;
     char clickedPiece = '-';
     bool white;
+    void detectClickedSprite(sf::RenderWindow &window, sf::Event& event);
 public:
     PiecePromotionPrompt(bool white, PiecePosition promotingPosition, std::array<sf::Sprite *, 8> promotionPieceSprites);
-    void showPrompt(sf::RenderWindow &window);
+    void showPrompt(sf::RenderWindow &window, sf::Event& event);
     [[nodiscard]] char getClickedPiece() const {
         return clickedPiece;
     }
-    void detectClickedSprite(sf::RenderWindow &window);
     [[nodiscard]] PiecePosition getPromotingPawnPosition() const {
         return promotingPosition;
     }
