@@ -6,7 +6,8 @@
 
 std::string Piece::getPath(char _name) {
 
-    return PIECE_PATH + std::string(1, _name) + ".png";
+    const char suffix = islower(_name) ? BLACK_SUFFIX : WHITE_SUFFIX;
+    return PIECE_PATH + std::string(1, _name) + suffix + ".png";
 }
 
 Piece::Piece(sf::Sprite &initSprite, char _name) : CustomTexture(getPath(_name), initSprite)

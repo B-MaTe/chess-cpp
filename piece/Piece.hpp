@@ -7,9 +7,11 @@
 #pragma once
 #include "../globals.hpp"
 #include "../texture/CustomTexture.hpp"
+#include <cctype>
 
 const std::string PIECE_PATH = "../static/img/pieces/";
-
+const char WHITE_SUFFIX = 'W';
+const char BLACK_SUFFIX = 'B';
 
 class Piece : public CustomTexture {
 private:

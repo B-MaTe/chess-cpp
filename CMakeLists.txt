@@ -1,13 +1,5 @@
-cmake_minimum_required(VERSION 3.26)
+cmake_minimum_required(VERSION 3.25)
 project(chess)
-
-if(WIN32)
-    # For Windows
-elseif(UNIX)
-    # For Linux
-endif()
-
-find_package(SFML COMPONENTS graphics REQUIRED)
 
 set(SOURCES
         main.cpp
@@ -29,4 +21,9 @@ set(SOURCES
 
 add_executable(chess ${SOURCES})
 
-target_link_libraries(${PROJECT_NAME} sfml-graphics)
+if(UNIX)
+    # For Linux
+    find_package(SFML COMPONENTS graphics REQUIRED)
+    target_link_libraries(${PROJECT_NAME} sfml-graphics)
+endif()
+
