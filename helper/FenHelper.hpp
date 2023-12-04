@@ -10,6 +10,7 @@
 #include <vector>
 #include <iostream>
 #include <string>
+#include <regex>
 
 #ifndef BASE_FEN
 #define BASE_FEN "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1"

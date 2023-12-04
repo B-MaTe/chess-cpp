@@ -3,22 +3,11 @@ project(chess)
 
 if(WIN32)
     # For Windows
-    set(SFML_DIR ${CMAKE_CURRENT_SOURCE_DIR}/lib/SFML_WIN)
 elseif(UNIX)
     # For Linux
-    set(SFML_DIR ${CMAKE_CURRENT_SOURCE_DIR}/lib/SFML_UNIX)
 endif()
 
-include_directories(
-        ${SFML_DIR}/include
-)
-
-link_directories(${SFML_DIR}/lib)
-
-set(SFML_STATIC_LIBRARIES TRUE)
-add_compile_definitions(SFML_STATIC)
-
-set(CMAKE_CXX_STANDARD 20)
+find_package(SFML COMPONENTS graphics REQUIRED)
 
 set(SOURCES
         main.cpp
@@ -40,4 +29,4 @@ set(SOURCES
 
 add_executable(chess ${SOURCES})
 
-target_link_libraries(chess PRIVATE sfml-graphics sfml-window sfml-system)
+target_link_libraries(${PROJECT_NAME} sfml-graphics)

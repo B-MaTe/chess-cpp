@@ -344,12 +344,39 @@ Status Game::getStatusOfPosition(bool whiteKing) const
             if (!nullPtrPiece(piece)
                 && (whiteKing ? piece->isWhite() : !piece->isWhite())
                 && !getValidMovesForPiece(piece).empty()) {
-                return ACTIVE;
+                return checkMateCanHappen() ? ACTIVE : DRAW;
             }
         }
     }
 
     return isCheckPosition(whiteKing) ? CHECKMATE : STALEMATE;
+}
+
+bool Game::checkMateCanHappen() const {
+    int whitePiecesNotKing = 0;
+    int blackPiecesNotKing = 0;
+    char piecesThatCanMate[] = {'q', 'Q', 'r', 'R', 'p', 'P'};
+
+    for (auto & row : board)
+    {
+        for (auto & piece: row)
+        {
+            if (!nullPtrPiece(piece) && piece->getName() != 'k' && piece->getName() != 'K' ) {
+                if (std::find(std::begin(piecesThatCanMate), std::end(piecesThatCanMate), piece->getName()) != std::end(piecesThatCanMate)) {
+                    std::cout << piece->getName();
+                    return true;
+                } else {
+                    if (piece->isWhite()) {
+                        whitePiecesNotKing++;
+                    } else {
+                        blackPiecesNotKing++;
+                    }
+                }
+            }
+        }
+    }
+
+    return whitePiecesNotKing > 1 || blackPiecesNotKing > 1;
 }
 
 PieceSharedPtr * Game::getPieceOnTable(char name) const

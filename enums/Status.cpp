@@ -6,4 +6,5 @@ enum Status {
     ACTIVE,
     CHECKMATE,
     STALEMATE,
+    DRAW,
 };

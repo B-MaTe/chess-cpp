@@ -7,12 +7,12 @@
 PiecePromotionPrompt::PiecePromotionPrompt(bool white, PiecePosition promotingPosition, std::array<sf::Sprite *, 8> promotionPieceSprites) : white(white),
                                                                                                                                              promotingPosition(promotingPosition),
                                                                                                                                            promoteOptions(
-        PromoteOptions(
-        *promotionPieceSprites[white ? 0 : 4],
-        *promotionPieceSprites[white ? 1 : 5],
-        *promotionPieceSprites[white ? 2 : 6],
-        *promotionPieceSprites[white ? 3 : 7]
-        )
+        PromoteOptions{
+                *promotionPieceSprites[white ? 0 : 4],
+                *promotionPieceSprites[white ? 1 : 5],
+                *promotionPieceSprites[white ? 2 : 6],
+                *promotionPieceSprites[white ? 3 : 7]
+        }
     )
 {
     promoteOptions.knightSprite.setScale(0.25, 0.25);

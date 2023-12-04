@@ -5,8 +5,8 @@
 #ifndef CHESS_PIECE_HPP
 #define CHESS_PIECE_HPP
 #pragma once
-#include "../texture/CustomTexture.hpp"
 #include "../globals.hpp"
+#include "../texture/CustomTexture.hpp"
 
 const std::string PIECE_PATH = "../static/img/pieces/";
 

@@ -35,13 +35,12 @@ Board::~Board()
         delete item;
     }
 
-    if (piecePromotionPrompt != nullptr) {
-        delete piecePromotionPrompt;
-    }
+    delete piecePromotionPrompt;
+
 }
 
 
-void Board::drawBoard(PieceSharedPtr (&boardToPrint)[8][8])
+[[maybe_unused]] void Board::drawBoard(PieceSharedPtr (&boardToPrint)[8][8])
 {
     for (auto & i : boardToPrint)
     {

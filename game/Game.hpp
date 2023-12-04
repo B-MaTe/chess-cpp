@@ -8,6 +8,7 @@
 
 #include "../board/Board.hpp"
 #include "../enums/Status.cpp"
+#include <algorithm>
 
 class Game
 {
@@ -24,6 +25,7 @@ public:
     static bool onTable(PiecePosition position)  {
         return onTable(position.row, position.col);
     }
+    bool checkMateCanHappen() const;
     bool pieceTurn(PieceSharedPtr & piece) const;
     Game(PieceSharedPtr (&board)[8][8], int move, bool whiteTurn, bool whiteAtBottom);
     void increaseMove() {
