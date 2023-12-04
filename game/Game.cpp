@@ -363,7 +363,6 @@ bool Game::checkMateCanHappen() const {
         {
             if (!nullPtrPiece(piece) && piece->getName() != 'k' && piece->getName() != 'K' ) {
                 if (std::find(std::begin(piecesThatCanMate), std::end(piecesThatCanMate), piece->getName()) != std::end(piecesThatCanMate)) {
-                    std::cout << piece->getName();
                     return true;
                 } else {
                     if (piece->isWhite()) {

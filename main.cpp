@@ -38,7 +38,7 @@ void gameOver(Status status, bool whiteMovedLast) {
     switch (status)
     {
         case CHECKMATE:
-            std::cout << "Checkstyle " << (whiteMovedLast ? "White" : "Black") << "has won the game!" << std::endl;
+            std::cout << "Checkmate " << (whiteMovedLast ? "White" : "Black") << " has won the game!" << std::endl;
             break;
         case STALEMATE:
             std::cout << "Stalemate!" << std::endl;
