@@ -30,9 +30,9 @@ public:
     [[maybe_unused]] void static drawBoard(PieceSharedPtr (&boardToPrint)[8][8]);
     void render(sf::RenderWindow& window, sf::Event& event);
     void loadPosition(std::array<std::array<char, 8>, 8> fen, std::array<sf::Sprite, 64>& pieceSprites, bool whiteAtBottom, sf::RenderWindow &window);
-    bool movePiece(PieceSharedPtr & piece, int row, int col, bool countsAsMove, bool whiteAtBottom, sf::RenderWindow &window);
+    bool movePiece(PieceSharedPtr &piece, int row, int col, bool countsAsMove, bool whiteAtBottom);
     bool movePiece(PieceSharedPtr & piece, PiecePosition position, bool countsAsMove, bool whiteAtBottom, sf::RenderWindow &window) {
-        return movePiece(piece, position.row, position.col, countsAsMove, whiteAtBottom, window);
+        return movePiece(piece, position.row, position.col, countsAsMove, whiteAtBottom);
     }
     PieceSharedPtr& getSquare(PiecePosition position) {
         return board[position.row][position.col];

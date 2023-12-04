@@ -210,8 +210,26 @@ bool Game::isValidKingMove(PieceSharedPtr &piece, PiecePosition newPosition) con
     int rowDiff = std::abs(newPosition.row - oldPosition.row);
     int colDiff = std::abs(newPosition.col - oldPosition.col);
 
+    // castling
+    bool canCastle = false;
+    if (rowDiff == 0 && !piece->isMoved() && !isCheck()) {
+        // rightSide
+        if (newPosition.col > oldPosition.col) {
+            PieceSharedPtr rook = getSquare({oldPosition.row, oldPosition.col + 3});
+            canCastle = nullPtrPiece(getSquare({oldPosition.row, oldPosition.col + 1}))
+                    && nullPtrPiece(getSquare({oldPosition.row, oldPosition.col + 2}))
+                    && (!nullPtrPiece(rook)) && !rook->isMoved();
+        } else if (newPosition.col < oldPosition.col) {
+            PieceSharedPtr rook = getSquare({oldPosition.row, oldPosition.col - 4});
+            canCastle = nullPtrPiece(getSquare({oldPosition.row, oldPosition.col - 1}))
+                        && nullPtrPiece(getSquare({oldPosition.row, oldPosition.col - 2}))
+                        && nullPtrPiece(getSquare({oldPosition.row, oldPosition.col - 3}))
+                        && (!nullPtrPiece(rook)) && !rook->isMoved();
+        }
+    }
 
-    return rowDiff <= 1 && colDiff <= 1 && !sameColourPieces(piece, getSquare(newPosition));
+
+    return rowDiff <= 1 && (colDiff <= 1 || (canCastle && colDiff == 2)) && !sameColourPieces(piece, getSquare(newPosition));
 }
 
 bool Game::isValidPawnMove(PieceSharedPtr &piece, PiecePosition newPosition) const

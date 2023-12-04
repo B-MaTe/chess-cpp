@@ -116,7 +116,7 @@ void Board::loadPosition(std::array<std::array<char, 8>, 8> fen, std::array<sf::
                 PieceSharedPtr piece = std::make_shared<Piece>(pieceSprite, fen[i][j]);
                 setPieceSpriteProperties(pieceSprite, piece);
                 piece->setPosition({i, j});
-                movePiece(piece, i, j, !piece->isAtStartingSquare(whiteAtBottom), whiteAtBottom, window);
+                movePiece(piece, i, j, !piece->isAtStartingSquare(whiteAtBottom), whiteAtBottom);
                 pieceCounter++;
             }
         }
@@ -136,8 +136,9 @@ void Board::setPieceSpriteProperties(sf::Sprite &pieceSprite, PieceSharedPtr & p
             pieceSize / piece->getTexture().getSize().y);
 }
 
-bool Board::movePiece(PieceSharedPtr & piece, int row, int col, bool countsAsMove, bool whiteAtBottom, sf::RenderWindow &window)
+bool Board::movePiece(PieceSharedPtr &piece, int row, int col, bool countsAsMove, bool whiteAtBottom)
 {
+    PiecePosition oldPos = piece->getPosition();
     PieceSharedPtr & newPosPiece = board[row][col];
     const sf::FloatRect boardBounds = getSprite().getGlobalBounds();
     float cellSize = (boardBounds.width / 8);
@@ -161,6 +162,17 @@ bool Board::movePiece(PieceSharedPtr & piece, int row, int col, bool countsAsMov
     if (countsAsMove && pawnPromotionMove(piece, whiteAtBottom)) {
         piecePromotionPrompt = new PiecePromotionPrompt(piece->isWhite(), piece->getPosition(), promotionPieceSprites);
         setActive(false);
+    }
+
+    // check for castling
+    if (countsAsMove && tolower(piece->getName()) == 'k' && oldPos.row == row && abs(oldPos.col - col) > 1) {
+        if (col > oldPos.col) {
+            PieceSharedPtr rook = getSquare({row, col + 1});
+            movePiece(rook, row, col - 1, false, whiteAtBottom);
+        } else {
+            PieceSharedPtr rook = getSquare({row, col - 2});
+            movePiece(rook, row, col + 1, false, whiteAtBottom);
+        }
     }
 
     return true;

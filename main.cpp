@@ -23,7 +23,10 @@ PieceSharedPtr clickedAtPiece(sf::Vector2<int> mousePos, Board & board) {
 
 void colorKingSquareOnChess(Game& game, Board& board) {
     if (game.isCheckPosition(game.isWhiteTurn())) {
-    board.colorSquares({game.getPieceOnTable(game.isWhiteTurn() ? 'K' : 'k')->get()->getPosition()});
+        board.colorSquares({game.getPieceOnTable(game.isWhiteTurn() ? 'K' : 'k')->get()->getPosition()});
+        game.setCheck(true);
+    } else {
+        game.setCheck(false);
     }
 }
 

@@ -16,6 +16,7 @@ private:
     int move = 0;
     bool whiteTurn = true;
     bool whiteAtBottom = true;
+    bool check = false;
     PieceSharedPtr (&board)[8][8];
 public:
 
@@ -61,6 +62,12 @@ public:
     }
     [[nodiscard]] bool emptyPosition(PiecePosition position) const {
         return nullPtrPiece(board[position.row][position.col]);
+    }
+    bool isCheck() const {
+        return check;
+    }
+    void setCheck(bool isCheck) {
+        check = isCheck;
     }
 };
 
